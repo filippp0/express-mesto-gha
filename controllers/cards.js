@@ -26,12 +26,18 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  if (req.params.cardId) {
+  if (req.params.cardId.length === 24) {
     Card.findByIdAndRemove(req.params.cardId)
-      .then(() => res.send({ message: 'Карточка удалена' }))
+      .then((card) => {
+        if (!card) {
+          res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+          return;
+        }
+        res.send({ message: 'Карточка удалена' });
+      })
       .catch(() => res.status(404).send({ message: 'Карточка с указанным _id не найдена.' }));
   } else {
-    res.status(500).send({ message: 'Ошибка по умолчанию.' });
+    res.status(400).send({ message: 'Некорректный _id карточки' });
   }
 };
 
@@ -53,12 +59,18 @@ module.exports.likeCard = (req, res) => {
 };
 
 module.exports.dislikeCard = (req, res) => {
-  if (req.params.cardId) {
+  if (req.params.cardId.length === 24) {
     Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
       .populate(['owner', 'likes'])
-      .then((card) => res.send(card))
+      .then((card) => {
+        if (!card) {
+          res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+          return;
+        }
+        res.send(card);
+      })
       .catch(() => res.status(404).send({ message: 'Карточка с указанным _id не найдена.' }));
   } else {
-    res.status(500).send({ message: 'Ошибка по умолчанию.' });
+    res.status(400).send({ message: 'Некорректный _id карточки' });
   }
 };
