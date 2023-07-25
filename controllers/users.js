@@ -3,7 +3,7 @@ const User = require('../models/user');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -30,7 +30,7 @@ module.exports.addUser = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -48,7 +48,7 @@ module.exports.editUserData = (req, res) => {
         }
       });
   } else {
-    res.status(500).send({ message: 'Ошибка по умолчанию.' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -64,6 +64,6 @@ module.exports.editUserAvatar = (req, res) => {
         }
       });
   } else {
-    res.status(500).send({ message: 'Ошибка по умолчанию.' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   }
 };
