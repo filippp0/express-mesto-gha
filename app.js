@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
@@ -16,7 +16,7 @@ mongoose.connect(DB_URL, {
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64beeb87ae1a0df63ae676ce',
+    _id: '64c3bdf3693f48db7cacfbd5',
   };
   next();
 });
@@ -24,8 +24,8 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'страница не найдена.' });
-});
+// app.use('*', (req, res) => {
+//   res.status(404).send({ message: 'страница не найдена.' });
+// });
 
 app.listen(PORT);
