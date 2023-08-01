@@ -14,8 +14,6 @@ module.exports.addCard = (req, res) => {
         .catch((err) => {
           if (err instanceof mongoose.Error.DocumentNotFoundError) {
             res.status(notFoundStatus).send({ message: 'Карточка с указанным _id не найдена.' });
-          } else if (err instanceof mongoose.Error.CastError) {
-            res.status(badRequestStatus).send({ message: `Некорректный _id: ${req.params.userId}` });
           } else {
             res.status(serverErrorStatus).send({ message: 'На сервере произошла ошибка' });
           }
