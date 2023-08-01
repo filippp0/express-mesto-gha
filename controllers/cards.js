@@ -9,6 +9,7 @@ module.exports.addCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       Card.findById(card._id)
+        .orFail()
         .populate('owner')
         .then((data) => res.status(createdStatus).send(data))
         .catch((err) => {
