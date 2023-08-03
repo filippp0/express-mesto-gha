@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
 const httpConstants = require('http2').constants;
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 module.exports.addCard = (req, res) => {
