@@ -1,6 +1,8 @@
 const httpConstants = require('http2').constants;
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -8,7 +10,7 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => {
@@ -16,11 +18,11 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(httpConstants.HTTP_STATUS_BAD_REQUEST).send({ message: `Некорректный _id: ${req.params.userId}` });
+        next(new BadRequestError(`Некорректный _id: ${req.params.userId}`));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        res.status(httpConstants.HTTP_STATUS_NOT_FOUND).send({ message: `Пользователь по указанному _id: ${req.params.userId} не найден.` });
+        next(new NotFoundError(`Пользователь по указанному _id: ${req.params.userId} не найден.`));
       } else {
-        res.status(httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }
     });
 };
