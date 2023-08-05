@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-// const validator = require('validator');
+const validator = require('validator');
 const UnautorizedError = require('../errors/UnautorizedError');
 
 const userSchema = new mongoose.Schema({
@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    minlength: [2, 'Минимальная длина поля "about" - 2'],
-    maxlength: [30, 'Максимальная длина поля "about" - 30'],
+    minlength: [2, 'Минимальная длина поля - 2'],
+    maxlength: [30, 'Максимальная длина поля - 30'],
     default: 'Исследователь',
   },
   avatar: {
@@ -31,8 +31,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Поле должно быть заполнено'],
     unique: true,
     validate: {
-      validator(v) {
-        return /^\S+@\S+\.\S+$/.test(v);
+      validator(email) {
+        validator.isEmail(email);
       },
       message: 'Введите верный email',
     },

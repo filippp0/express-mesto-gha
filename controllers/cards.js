@@ -1,3 +1,5 @@
+/* Обработка ошибок mongoose.Error.ValidationError принимает err.message,
+это не дефолтный текст, а текст описсаный в схеме */
 const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
 const mongoose = require('mongoose');
 const Card = require('../models/card');
