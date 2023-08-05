@@ -59,7 +59,11 @@ module.exports.deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
-      next(err);
+      if (err.name === 'TypeError') {
+        next(new NotFoundError(`Карточка с _id: ${req.params.cardId} не найдена.`));
+      } else {
+        next(err);
+      }
     });
 };
 

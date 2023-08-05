@@ -75,7 +75,7 @@ module.exports.addUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     })
-      .then((user) => res.status(HTTP_STATUS_CREATED).send({ _id: user._id, email: user.email }))
+      .then((user) => res.status(HTTP_STATUS_CREATED).send(user))
       .catch((err) => {
         if (err.code === 11000) {
           next(new ConflictError(`Пользователь с email: ${email} уже зарегистрирован`));
@@ -91,12 +91,10 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // console.log('then')
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send({ token });
     })
     .catch((err) => {
-      // console.log(err)
       next(err);
     });
 };
