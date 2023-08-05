@@ -1,3 +1,4 @@
+const { HTTP_STATUS_INTERNAL_SERVER_ERROR } = require('http2').constants;
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -28,14 +29,13 @@ app.use('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
+  const { statusCode = HTTP_STATUS_INTERNAL_SERVER_ERROR, message } = err;
   res.status(statusCode).send({
-    message: statusCode === 500
+    message: statusCode === HTTP_STATUS_INTERNAL_SERVER_ERROR
       ? 'На сервере произошла ошибка'
       : message,
   });
   next();
-  // res.status(err.statusCode).send({ message: err.message });
 });
 
 app.listen(PORT);
