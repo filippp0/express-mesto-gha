@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -77,7 +78,7 @@ module.exports.addUser = (req, res, next) => {
       .then((user) => res.status(HTTP_STATUS_CREATED).send({ _id: user._id, email: user.email }))
       .catch((err) => {
         if (err.code === 11000) {
-          next(new BadRequestError(`Пользователь с email: ${email} уже зарегистрирован`));
+          next(new ConflictError(`Пользователь с email: ${email} уже зарегистрирован`));
         } else if (err instanceof mongoose.Error.ValidationError) {
           next(new BadRequestError(err.message));
         } else {
@@ -86,14 +87,16 @@ module.exports.addUser = (req, res, next) => {
       }));
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      // console.log('then')
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send({ token });
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      // console.log(err)
+      next(err);
     });
 };
