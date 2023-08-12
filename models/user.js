@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const UnautorizedError = require('../errors/UnautorizedError');
 const urlRegex = require('../utils/constants');
-const ForbiddenError = require('../errors/ForbiddenError');
+// const ForbiddenError = require('../errors/ForbiddenError');
 
 const userSchema = new mongoose.Schema({
   name: {
