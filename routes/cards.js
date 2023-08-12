@@ -7,13 +7,13 @@ const {
 
 router.get('/', getCards);
 
-// router.delete('/:cardId', celebrate({
-//   params: Joi.object().keys({
-//     cardId: Joi.string().length(24).hex().required(),
-//   }),
-// }), deleteCard);
+router.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().length(24).hex().required(),
+  }),
+}), deleteCard);
 
-router.delete('/:cardId', deleteCard);
+// router.delete('/:cardId', deleteCard);
 
 router.post('/', celebrate({
   body: Joi.object().keys({
