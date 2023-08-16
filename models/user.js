@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-// const validator = require('validator');
 const UnautorizedError = require('../errors/UnautorizedError');
 const { urlRegex, emailRegex } = require('../utils/constants');
 
