@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const urlRegex = require('../utils/constants');
+const { urlRegex } = require('../utils/constants');
 const {
   getUsers, getUserById, editUserData, editUserAvatar, getMeUser,
 } = require('../controllers/users');
 
 router.get('/', getUsers);
+
 router.get('/me', getMeUser);
 
 router.get('/:userId', celebrate({

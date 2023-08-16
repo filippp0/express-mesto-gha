@@ -1,13 +1,12 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/error-handler');
-
-const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
-
+// console.log(require('http2').constants);
+const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 const app = express();
 
 const limiter = rateLimit({

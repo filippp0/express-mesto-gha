@@ -1,4 +1,6 @@
-const { HTTP_STATUS_CREATED, HTTP_STATUS_OK } = require('http2').constants;
+/* Обработка ошибок mongoose.Error.ValidationError принимает err.message,
+это не дефолтный текст, а текст описсаный в схеме */
+const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
 const mongoose = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
@@ -39,10 +41,9 @@ module.exports.getCards = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
-    .orFail()
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        throw new ForbiddenError('Карточка другого пользователя');
+        throw new ForbiddenError('Карточка другого пользовател');
       }
       Card.deleteOne(card)
         .orFail()
@@ -60,7 +61,7 @@ module.exports.deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      if (err.name === 'TypeError') {
         next(new NotFoundError(`Карточка с _id: ${req.params.cardId} не найдена.`));
       } else {
         next(err);

@@ -1,16 +1,24 @@
+/* Обработка ошибок mongoose.Error.ValidationError принимает err.message,
+это не дефолтный текст, а текст описсаный в схеме */
 const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+const { SECRET_KEY = 'mesto-test' } = process.env;
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 
-const { SECRET_KEY = 'mesto' } = process.env;
-
 module.exports.getUsers = (req, res, next) => {
   User.find({})
+    .then((users) => res.status(HTTP_STATUS_OK).send(users))
+    .catch(next);
+};
+
+module.exports.getMeUser = (req, res, next) => {
+  User.findById(req.user._id)
     .then((users) => res.status(HTTP_STATUS_OK).send(users))
     .catch(next);
 };
@@ -41,7 +49,7 @@ module.exports.editUserData = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError(`Пользователь по указанному _id: ${req.user._id} не найден.`));
       } else {
         next(err);
       }
@@ -56,7 +64,7 @@ module.exports.editUserAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError(`Пользователь по указанному _id: ${req.user._id} не найден.`));
       } else {
         next(err);
       }
@@ -95,10 +103,4 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-};
-
-module.exports.getMeUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => res.status(HTTP_STATUS_OK).send(user))
-    .catch(next);
 };

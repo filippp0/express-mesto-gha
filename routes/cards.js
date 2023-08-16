@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const urlRegex = require('../utils/constants');
+const { urlRegex } = require('../utils/constants');
 const {
   addCard, getCards, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
@@ -12,8 +12,6 @@ router.delete('/:cardId', celebrate({
     cardId: Joi.string().length(24).hex().required(),
   }),
 }), deleteCard);
-
-// router.delete('/:cardId', deleteCard);
 
 router.post('/', celebrate({
   body: Joi.object().keys({
