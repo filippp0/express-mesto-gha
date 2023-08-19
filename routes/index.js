@@ -8,9 +8,9 @@ const NotFoundError = require('../errors/NotFoundError');
 
 router.use('/signup', signupRouter);
 router.use('/signin', signinRouter);
-router.use(auth);
-router.use('/users', usersRouter);
-router.use('/cards', cardsRouter);
+// router.use(auth);
+router.use('/users', auth, usersRouter);
+router.use('/cards', auth, cardsRouter);
 router.use('*', (req, res, next) => {
   next(new NotFoundError('страница не найдена.'));
 });
